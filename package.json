@@ -1,0 +1,16 @@
+{
+	"name": "vite-svelte-dedupe",
+	"private": true,
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"serve": "vite preview"
+	},
+	"devDependencies": {
+		"@sveltejs/vite-plugin-svelte": "link:../vite-plugin-svelte/packages/vite-plugin-svelte",
+		"svelte": "^3.38.2",
+		"svelte-select": "^3.17.0",
+		"tinro": "^0.6.4",
+		"vite": "link:../vite/packages/vite"
+	}
+}
