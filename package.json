@@ -4,13 +4,14 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
-		"serve": "vite preview"
+		"serve": "vite preview",
+		"optimize": "vite optimize --force"
 	},
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "link:../vite-plugin-svelte/packages/vite-plugin-svelte",
+		"@sveltejs/vite-plugin-svelte": "link:../../svelte/vite-plugin-svelte/packages/vite-plugin-svelte",
 		"svelte": "^3.38.2",
 		"svelte-select": "^3.17.0",
 		"tinro": "^0.6.4",
-		"vite": "link:../vite/packages/vite"
+		"vite": "link:../../vite/packages/vite"
 	}
 }
