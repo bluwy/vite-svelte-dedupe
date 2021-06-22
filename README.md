@@ -1,6 +1,6 @@
 # vite-svelte-dedupe
 
-A messy remnant of my pre-bundling journey.
+Pre-bundled dependencies doesn't dedupe imports in external files. Specifically in this repo, Svelte files are the external files.
 
 ## Repro steps
 
@@ -13,9 +13,9 @@ A messy remnant of my pre-bundling journey.
 
 The problem is that the `tinro` dependency's code isn't deduped due to the use of Svelte files. Below explains the issue in detail, the main paragraph is [library not dedupe](#library-not-dedupe).
 
-This is also not an issue within `tinro` as it works properly if we add it to `optimizeDeps.exclude`.
+This is also not an issue within `tinro` as it works properly if we add it to `optimizeDeps.exclude`. `tinro` is used as the dependency to be pre-bundled.
 
-> Start of long article
+> NOTE: The part below isn't relevant to the repro, but it documents some issues/learnings I find while fixing Vite + Svelte pre-bundling issue.
 
 # Problem
 
@@ -74,9 +74,19 @@ The notable files are `cmp/Route.svelte`, `cmp/index.js`, and `dist/tinro_lib.js
 
 When Vite optimizes this (entrypoint `cmp/index.js`), Vite will [ignore Svelte file extensions](https://github.com/vitejs/vite/blob/9aa255a0abcb9f5b23c34607b2188f796f4b6c94/packages/vite/src/node/optimizer/esbuildDepPlugin.ts#L71-L85) (among other types) in the bundle, make sense as we shouldn't bundle Svelte components.
 
-But there's a problem, taking a look at `cmp/Route.svelte`, you'll notice that it imports a path to `./../dist/tinro_lib`, and in the network request, you can see that the path is transformed directly to the actual file in node_modules (not the pre-bundled file in `.vite`).
+But there's a problem, taking a look at `cmp/Route.svelte`, you'll notice that it imports a path to `./../dist/tinro_lib`. Going back to the running Vite app, the network request shows that it's not importing from the pre-bundled `tinro.js` file in `.vite`.
 
-And this **fails dedupe for the library itself**, not Svelte anymore. This is likely the root cause why some Svelte libraries work oddly.
+```js
+// http://localhost:3000/node_modules/.pnpm/tinro@0.6.4/node_modules/tinro/cmp/Route.svelte
+
+// ...
+
+import { createRouteObject } from '/node_modules/.pnpm/tinro@0.6.4/node_modules/tinro/dist/tinro_lib.js'
+
+//...
+```
+
+`tinro`'s code is now duplicated between `tinro_lib.js` and `tinro.js`, and this **fails dedupe for the library itself**, not Svelte anymore. This is likely the root cause why some Svelte libraries work oddly.
 
 # Solution
 
