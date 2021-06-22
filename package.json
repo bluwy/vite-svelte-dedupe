@@ -8,9 +8,9 @@
 		"optimize": "vite optimize --force"
 	},
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "link:../../svelte/vite-plugin-svelte/packages/vite-plugin-svelte",
+		"@sveltejs/vite-plugin-svelte": "^1.0.0-next.11",
 		"svelte": "^3.38.2",
 		"tinro": "^0.6.4",
-		"vite": "link:../../vite/packages/vite"
+		"vite": "^2.3.8"
 	}
 }

@@ -1,46 +1,40 @@
 import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 
-export default defineConfig({
-  plugins: [svelte()],
-  optimizeDeps: {
-    // exclude: ['tinro'],
-    esbuildOptions: {
-      plugins: [
-        {
-          name: 'vite-test',
-          setup(build) {
-            // delete build.initialOptions.treeShaking
-            // delete build.initialOptions.splitting
-            // delete build.initialOptions.sourcemap
-            // delete build.initialOptions.logLevel
-            // build.initialOptions.plugins = []
-            // console.log(build.initialOptions)
-            // build.onResolve({
-            //   filter: /.*/
-            // }, (a) => {
-            //   if (a.path.startsWith('svelte')) {
-            //     console.log(a)
-            //   }
-            // })
+const SVELTE_IMPORTS = [
+  'svelte/animate',
+  'svelte/easing',
+  'svelte/internal',
+  'svelte/motion',
+  'svelte/store',
+  'svelte/transition',
+  'svelte',
+]
 
-            // if (build.initialOptions.external) {
-            //   const filter = new RegExp(
-            //     '^(' + build.initialOptions.external.map(s => s.replace(/[()[\]{}*+?^$|#.,\/\\\s-]/g, "\\$&")).join('|') + ')'
-            //   )
-            //   console.log(filter)
-            //   build.onResolve({ filter }, (args) => {
-            //     console.log(args)
-            //     return {
-            //       path: args.path,
-            //       external: true,
-            //     }
-            //   })
-            // }
-          },
-        },
-      ],
-      // external: ['svelte', 'svelte/*']
-    },
-  },
+export default defineConfig({
+  plugins: [
+    svelte(),
+    // Optimize svelte imports to dedupe Svelte
+    patchSvelte(),
+  ],
 })
+
+function patchSvelte() {
+  return {
+    name: 'svelte:patch',
+    config(cfg) {
+      // Remove svelte imports added by vite-plugin-svelte
+      if (cfg.optimizeDeps?.exclude) {
+        cfg.optimizeDeps.exclude = cfg.optimizeDeps.exclude.filter(
+          (dep) => !SVELTE_IMPORTS.includes(dep)
+        )
+      }
+
+      return {
+        optimizeDeps: {
+          include: [...SVELTE_IMPORTS],
+        },
+      }
+    },
+  }
+}

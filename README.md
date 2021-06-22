@@ -4,14 +4,12 @@ A messy remnant of my pre-bundling journey.
 
 ## Repro steps
 
-1. Adjust local package links in `package.json`.
-2. Update local `@sveltejs/vite-plugin-svelte` from [this](https://github.com/sveltejs/vite-plugin-svelte/blob/09b63d32e8816acc554a66d4d01062be197dfbb7/packages/vite-plugin-svelte/src/index.ts#L61) to [this](https://github.com/bluwy/vite-plugin-svelte/blob/563cad0ddc534357be2c2053ff2c5e8ae28d1268/packages/vite-plugin-svelte/src/index.ts#L61-L62).
-3. `pnpm i`.
-4. `pnpm dev`.
-5. Go to http://localhost:3000.
-6. Click on "To bar" link, text change to "Bar".
-7. Refresh http://localhost:3000.
-8. Click on "Go bar" button, text doesn't change (It should change to "Bar").
+1. `pnpm i`.
+2. `pnpm dev`.
+3. Go to http://localhost:3000.
+4. Click on "To bar" link, text change to "Bar".
+5. Refresh http://localhost:3000.
+6. Click on "Go bar" button, text doesn't change (It should change to "Bar").
 
 The problem is that the `tinro` dependency's code isn't deduped due to the use of Svelte files. Below explains the issue in detail, the main paragraph is [library not dedupe](#library-not-dedupe).
 
@@ -82,8 +80,6 @@ And this **fails dedupe for the library itself**, not Svelte anymore. This is li
 
 # Solution
 
-Based on the root cause, this happens to any extensions [listed here](https://github.com/vitejs/vite/blob/9aa255a0abcb9f5b23c34607b2188f796f4b6c94/packages/vite/src/node/optimizer/esbuildDepPlugin.ts#L15-L32). I have not tested this on other extensions.
+Based on the root cause, this happens to any extensions [listed here](https://github.com/vitejs/vite/blob/9aa255a0abcb9f5b23c34607b2188f796f4b6c94/packages/vite/src/node/optimizer/esbuildDepPlugin.ts#L15-L32). I have not tested this on other extensions like `.vue` or `.tsx` as these files are usually compiled in library builds.
 
 I don't have a solid strategy to tackle this, but one naive implementation would be to scan these subpaths as entrypoints for the pre-bundling, so esbuild would generate the chunks for these files to use.
-
-If this happens to be a Svelte specific thing, we could auto externalize all Svelte libraries based on `pkg.svelte`.
