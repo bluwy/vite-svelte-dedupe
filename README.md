@@ -4,14 +4,18 @@ A messy remnant of my pre-bundling journey.
 
 ## Repro steps
 
-1. `pnpm i`.
-2. `pnpm dev`.
-3. Go to http://localhost:3000.
-4. Click on "To bar" link, text change to "Bar".
-5. Refresh http://localhost:3000.
-6. Click on "Go bar" button, text doesn't change (It should change to "Bar").
+1. Adjust local package links in `package.json`.
+2. Update local `@sveltejs/vite-plugin-svelte` from [this](https://github.com/sveltejs/vite-plugin-svelte/blob/09b63d32e8816acc554a66d4d01062be197dfbb7/packages/vite-plugin-svelte/src/index.ts#L61) to [this](https://github.com/bluwy/vite-plugin-svelte/blob/563cad0ddc534357be2c2053ff2c5e8ae28d1268/packages/vite-plugin-svelte/src/index.ts#L61-L62).
+3. `pnpm i`.
+4. `pnpm dev`.
+5. Go to http://localhost:3000.
+6. Click on "To bar" link, text change to "Bar".
+7. Refresh http://localhost:3000.
+8. Click on "Go bar" button, text doesn't change (It should change to "Bar").
 
-The problem is that the `tinro` dependency's code isn't deduped due to the use of Svelte files. Below explains the issue in detail, the main paragraph is [library not dedupe](#library-not-dedupe)
+The problem is that the `tinro` dependency's code isn't deduped due to the use of Svelte files. Below explains the issue in detail, the main paragraph is [library not dedupe](#library-not-dedupe).
+
+This is also not an issue within `tinro` as it works properly if we add it to `optimizeDeps.exclude`.
 
 > Start of long article
 
