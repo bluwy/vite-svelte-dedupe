@@ -2,7 +2,18 @@
 
 A messy remnant of my pre-bundling journey.
 
-> Below is my notes taken
+## Repro steps
+
+1. `pnpm i`.
+2. `pnpm dev`.
+3. Go to http://localhost:3000.
+4. Click on "To bar" link, text change to "Bar".
+5. Refresh http://localhost:3000.
+6. Click on "Go bar" button, text doesn't change (It should change to "Bar").
+
+The problem is that the `tinro` dependency's code isn't deduped due to the use of Svelte files. Below explains the issue in detail, the main paragraph is [library not dedupe](#library-not-dedupe)
+
+> Start of long article
 
 # Problem
 
@@ -14,7 +25,7 @@ Dedupe Svelte dependency to ensure runtime is shared in pre-bundling and in user
 
 # Travels
 
-The pre-bundling process uses esbuild. Esbuild is ran twice by Vite, one for import scans, one for the actula pre-bundling. The focus is on the latter. [Here's the relevant code](https://github.com/vitejs/vite/blob/9abdb8137ef54dd095e7bc47ae6a1ccf490fd196/packages/vite/src/node/optimizer/index.ts#L262).
+The pre-bundling process uses esbuild. Esbuild is ran twice by Vite, one for import scans, one for the actual pre-bundling. The focus is on the latter. [Here's the relevant code](https://github.com/vitejs/vite/blob/9abdb8137ef54dd095e7bc47ae6a1ccf490fd196/packages/vite/src/node/optimizer/index.ts#L262).
 
 ## external
 
@@ -37,7 +48,7 @@ Now, external will be respected.
 However, this patch doesn't work in the big picture, because:
 
 1. In user code, Vite transforms the Svelte import path to, e.g. `/node_modules/.pnpm/svelte@3.38.2/node_modules/svelte/index.mjs?v=abc123`
-2. In prebundled code, the import path is, e.g. `/node_modules/.pnpm/svelte@3.38.2/node_modules/svelte/index.mjs`
+2. In pre-bundled code, the import path is, e.g. `/node_modules/.pnpm/svelte@3.38.2/node_modules/svelte/index.mjs`
 
 The query string returns two different Svelte instance for each requested script. This may explain why Vite intentionally affect the external algorithm.
 
