@@ -3,22 +3,16 @@ lockfileVersion: 5.3
 specifiers:
   '@sveltejs/vite-plugin-svelte': link:../../svelte/vite-plugin-svelte/packages/vite-plugin-svelte
   svelte: ^3.38.2
-  svelte-select: ^3.17.0
   tinro: ^0.6.4
   vite: link:../../vite/packages/vite
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte': link:../../svelte/vite-plugin-svelte/packages/vite-plugin-svelte
   svelte: 3.38.2
-  svelte-select: 3.17.0
   tinro: 0.6.4
   vite: link:../../vite/packages/vite
 
 packages:
-
-  /svelte-select/3.17.0:
-    resolution: {integrity: sha512-ITmX/XUiSdkaILmsTviKRkZPaXckM5/FA7Y8BhiUPoamaZG/ZDyOo6ydjFu9fDVFTbwoAUGUi6HBjs+ZdK2AwA==}
-    dev: true
 
   /svelte/3.38.2:
     resolution: {integrity: sha512-q5Dq0/QHh4BLJyEVWGe7Cej5NWs040LWjMbicBGZ+3qpFWJ1YObRmUDZKbbovddLC9WW7THTj3kYbTOFmU9fbg==}
